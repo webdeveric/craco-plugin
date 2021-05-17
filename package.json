@@ -18,6 +18,7 @@
     "dist"
   ],
   "scripts": {
+    "dev": "npm run build -- --watch",
     "prebuild": "rimraf ./dist",
     "build": "tsc",
     "typecheck": "tsc --noEmit",
