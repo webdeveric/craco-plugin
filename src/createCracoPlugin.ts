@@ -20,10 +20,10 @@ export function createCracoPlugin<Options extends CoreOptions = CoreOptions>({
 }: {
   name: string;
   getOptions: <O extends CoreOptions>(options: O, context: Context) => Options;
-  craco: ComposeFn<ReturnType<CracoPluginHook<'cracoConfig', Options>>, [Options, Context]>[];
-  webpack: ComposeFn<ReturnType<CracoPluginHook<'webpackConfig', Options>>, [Options, Context]>[];
-  devServer: ComposeFn<ReturnType<CracoPluginHook<'devServerConfig', Options>>, [Options, Context]>[];
-  jest: ComposeFn<ReturnType<CracoPluginHook<'jestConfig', Options>>, [Options, Context]>[];
+  craco?: ComposeFn<ReturnType<CracoPluginHook<'cracoConfig', Options>>, [Options, Context]>[];
+  webpack?: ComposeFn<ReturnType<CracoPluginHook<'webpackConfig', Options>>, [Options, Context]>[];
+  devServer?: ComposeFn<ReturnType<CracoPluginHook<'devServerConfig', Options>>, [Options, Context]>[];
+  jest?: ComposeFn<ReturnType<CracoPluginHook<'jestConfig', Options>>, [Options, Context]>[];
 }): CracoPlugin<Options> {
   const createHook = <ConfigKey extends keyof ConfigObjects>(
     configKey: ConfigKey,
