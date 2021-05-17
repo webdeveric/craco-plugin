@@ -15,13 +15,13 @@ const myCracoPlugin = createCracoPlugin({
   name: 'My Plugin',
   getOptions(options, context) {
     return {
-      // default option values go here
-      // you can use context.env to conditionally set values based on the NODE_ENV
+      // Default option values go here.
+      // Tou can use `context.env` to conditionally set values based on the NODE_ENV.
       ...options,
     };
   },
-  // These arrays take functions that modify the provided configuration object.
-  //
+  // These arrays should contain functions that modify the provided configuration object.
+  // These arrays are optional.
   craco = [
     /*
      * This config parameter is a Craco object.
