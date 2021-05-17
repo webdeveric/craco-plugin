@@ -5,8 +5,13 @@ import type {
   ConfigObjects,
   Context,
   CoreOptions,
+  CracoContext,
   CracoPlugin,
   CracoPluginHook,
+  DevServerContext,
+  JestContext,
+  RequireAtLeastOne,
+  WebpackContext,
 } from './types';
 import { debugConfig, withCoreOptions } from './util';
 
@@ -17,18 +22,21 @@ export function createCracoPlugin<Options extends CoreOptions = CoreOptions>({
   webpack = [],
   devServer = [],
   jest = [],
-}: {
-  name: string;
-  getOptions: <O extends CoreOptions>(options: O, context: Context) => Options;
-  craco?: ComposeFn<ReturnType<CracoPluginHook<'cracoConfig', Options>>, [Options, Context]>[];
-  webpack?: ComposeFn<ReturnType<CracoPluginHook<'webpackConfig', Options>>, [Options, Context]>[];
-  devServer?: ComposeFn<ReturnType<CracoPluginHook<'devServerConfig', Options>>, [Options, Context]>[];
-  jest?: ComposeFn<ReturnType<CracoPluginHook<'jestConfig', Options>>, [Options, Context]>[];
-}): CracoPlugin<Options> {
-  const createHook = <ConfigKey extends keyof ConfigObjects>(
+}: RequireAtLeastOne<
+  {
+    name: string;
+    getOptions: <O extends CoreOptions>(options: O, context: Context) => Options;
+    craco?: ComposeFn<ReturnType<CracoPluginHook<'cracoConfig', Options>>, [Options, CracoContext]>[];
+    webpack?: ComposeFn<ReturnType<CracoPluginHook<'webpackConfig', Options>>, [Options, WebpackContext]>[];
+    devServer?: ComposeFn<ReturnType<CracoPluginHook<'devServerConfig', Options>>, [Options, DevServerContext]>[];
+    jest?: ComposeFn<ReturnType<CracoPluginHook<'jestConfig', Options>>, [Options, JestContext]>[];
+  },
+  'craco' | 'webpack' | 'devServer' | 'jest'
+>): CracoPlugin<Options> {
+  const createHook = <ConfigKey extends keyof ConfigObjects, C extends Context>(
     configKey: ConfigKey,
-    functions: ComposeFn<ReturnType<CracoPluginHook<typeof configKey, Options>>, [Options, Context]>[],
-  ): CracoPluginHook<typeof configKey, Options> => {
+    functions: ComposeFn<ReturnType<CracoPluginHook<typeof configKey, Options>>, [Options, C]>[],
+  ): CracoPluginHook<typeof configKey, Options, C> => {
     if (! functions.length) {
       log(`${name}: createHook(${configKey}): no functions specified.`);
 
@@ -46,7 +54,7 @@ export function createCracoPlugin<Options extends CoreOptions = CoreOptions>({
 
       log(`${name} env: ${context.env}`);
 
-      const configure = compose<ConfigObjects[ConfigKey], [Options, Context]>(
+      const configure = compose<ConfigObjects[ConfigKey], [Options, C]>(
         debugConfig(`Before: ${configKey}`),
         ...functions,
         debugConfig(`After: ${configKey}`),
