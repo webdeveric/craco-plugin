@@ -15,7 +15,7 @@
     "./util": "./dist/util/index.js"
   },
   "files": [
-    "./dist"
+    "dist"
   ],
   "scripts": {
     "prebuild": "rimraf ./dist",
