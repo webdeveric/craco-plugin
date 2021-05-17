@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "extends": "@webdeveric/eslint-config-ts",
+  "rules": {
+    "@typescript-eslint/no-explicit-any": "off"
+  },
+  "env": {
+    "browser": false,
+    "es6": true,
+    "mocha": true,
+    "node": true
+  }
+}

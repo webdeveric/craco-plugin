@@ -1,0 +1,69 @@
+{
+  "name": "@webdeveric/craco-plugin",
+  "version": "0.0.0",
+  "description": "Create your own CRACO plugins",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "node": "^12.20.0 || ^14.13.1 || >=16.0.0",
+  "types": "./dist/index.d.ts",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./index.js": "./dist/index.js",
+    "./util": "./dist/util/index.js"
+  },
+  "files": [
+    "./dist"
+  ],
+  "scripts": {
+    "prebuild": "rimraf ./dist",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "spellcheck": "cspell --no-progress './src}/**/*.ts' ./readme.md ./package.json",
+    "lint": "eslint ./src --ext .ts --fix",
+    "prepare": "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/webdeveric/craco-plugin.git"
+  },
+  "keywords": [
+    "craco",
+    "craco-plugin",
+    "cra",
+    "create-react-app"
+  ],
+  "author": "Eric King <eric@webdeveric.com>",
+  "bugs": {
+    "url": "https://github.com/webdeveric/craco-plugin/issues"
+  },
+  "homepage": "https://github.com/webdeveric/craco-plugin#readme",
+  "prettier": "@webdeveric/prettier-config",
+  "lint-staged": {
+    "./src/**/*.ts|./{cspell,package,tsconfig}.json|*.md": "cspell lint --no-progress --no-summary --no-must-find-files",
+    "./src/**/*.ts": "eslint --cache --fix",
+    "./{cspell,package,tsconfig}.json|*.md": "prettier --write"
+  },
+  "peerDependencies": {
+    "@craco/craco": "^6.0.0"
+  },
+  "dependencies": {
+    "@types/node": "^15.3.0",
+    "@types/webpack": "^4.0.0",
+    "@types/webpack-dev-server": "^3.11.4",
+    "@webdeveric/utils": "^0.6.0"
+  },
+  "devDependencies": {
+    "@webdeveric/eslint-config-ts": "^0.1.2",
+    "@webdeveric/prettier-config": "^0.1.0",
+    "cspell": "^5.4.1",
+    "eslint": "^7.26.0",
+    "husky": "^6.0.0",
+    "lint-staged": "^11.0.0",
+    "prettier": "^2.3.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.2.4"
+  }
+}
