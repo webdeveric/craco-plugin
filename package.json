@@ -23,7 +23,8 @@
     "typecheck": "tsc --noEmit",
     "spellcheck": "cspell --no-progress './src}/**/*.ts' ./readme.md ./package.json",
     "lint": "eslint ./src --ext .ts --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "prepublishOnly": "npm run spellcheck && npm run lint && npm run build"
   },
   "repository": {
     "type": "git",
