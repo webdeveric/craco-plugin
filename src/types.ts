@@ -1,4 +1,5 @@
 import type { Plugin, Configuration as WebpackConfig } from 'webpack';
+import type { ComposeFn } from '@webdeveric/utils';
 import type { Configuration as DevServerConfig } from 'webpack-dev-server';
 
 export type { DevServerConfig, WebpackConfig };
@@ -103,37 +104,61 @@ export type CracoConfig = {
     configure?: ConfigOptions<JestConfig>;
   };
   devServer?: ConfigOptions<DevServerConfig, Context & { proxy?: string; allowedHost: string }>;
-  // TODO fix the type for `plugins`.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  plugins?: any[];
+  plugins?: CracoPluginConfig[];
 };
 
-// export type CracoPluginConfig<Options extends AnyRecord = AnyRecord> = {
-//   plugin: CracoPlugin<Options>;
-//   options?: Options;
-// };
+export type CracoPluginConfig<Options extends AnyRecord = AnyRecord> = {
+  plugin: CracoPlugin<Options>;
+  options?: Options;
+};
 
-export type ConfigObjects = {
+export type ConfigKey = 'cracoConfig' | 'webpackConfig' | 'devServerConfig' | 'jestConfig';
+
+export type HookParameters = {
+  cracoConfig: {
+    config: CracoConfig;
+    context: CracoContext;
+  };
+  webpackConfig: {
+    config: WebpackConfig;
+    context: WebpackContext;
+  };
+  devServerConfig: {
+    config: DevServerConfig;
+    context: DevServerContext;
+  };
+  jestConfig: {
+    config: JestConfig;
+    context: JestContext;
+  };
+};
+
+export type HookConfig = {
+  [P in ConfigKey]: HookParameters[P]['config'];
+};
+
+export type HookContext = {
+  [P in ConfigKey]: HookParameters[P]['context'];
+};
+
+export type ConfigFn<K extends ConfigKey, Options> = ComposeFn<
+  HookConfig[K],
+  [Options & CoreOptions, HookContext[K], CracoConfig]
+>;
+
+export type CracoPluginHookParameters<K extends ConfigKey, O extends AnyRecord> = {
   cracoConfig: CracoConfig;
-  webpackConfig: WebpackConfig;
-  devServerConfig: DevServerConfig;
-  jestConfig: JestConfig;
-};
+  pluginOptions: Partial<O>;
+  context: HookContext[K];
+} & Pick<HookConfig, K>;
 
-export type CracoPluginHookParameters<K extends keyof ConfigObjects, O extends AnyRecord, C extends Context = Context> =
-  {
-    cracoConfig: CracoConfig;
-    pluginOptions: Partial<O>;
-    context: C;
-  } & Pick<ConfigObjects, K>;
-
-export type CracoPluginHook<K extends keyof ConfigObjects, O extends AnyRecord, C extends Context = Context> = (
-  parameters: CracoPluginHookParameters<K, O & CoreOptions, C>,
-) => ConfigObjects[K];
+export type CracoPluginHook<K extends ConfigKey, O extends AnyRecord> = (
+  parameters: CracoPluginHookParameters<K, O>,
+) => HookConfig[K];
 
 export type CracoPlugin<Options extends AnyRecord = AnyRecord> = {
-  overrideCracoConfig?: CracoPluginHook<'cracoConfig', Options, CracoContext>;
-  overrideWebpackConfig?: CracoPluginHook<'webpackConfig', Options, WebpackContext>;
-  overrideDevServerConfig?: CracoPluginHook<'devServerConfig', Options, DevServerContext>;
-  overrideJestConfig?: CracoPluginHook<'jestConfig', Options, JestContext>;
+  overrideCracoConfig?: CracoPluginHook<'cracoConfig', Options>;
+  overrideWebpackConfig?: CracoPluginHook<'webpackConfig', Options>;
+  overrideDevServerConfig?: CracoPluginHook<'devServerConfig', Options>;
+  overrideJestConfig?: CracoPluginHook<'jestConfig', Options>;
 };

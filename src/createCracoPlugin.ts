@@ -1,22 +1,23 @@
-import { compose, ComposeFn } from '@webdeveric/utils';
+import { compose } from '@webdeveric/utils';
 import { log } from '@craco/craco/lib/logger';
 
 import type {
-  ConfigObjects,
-  Context,
-  CoreOptions,
-  CracoContext,
+  AnyRecord,
+  ConfigFn,
+  ConfigKey,
+  CracoConfig,
   CracoPlugin,
   CracoPluginHook,
-  DevServerContext,
-  JestContext,
+  HookConfig,
+  HookContext,
   RequireAtLeastOne,
-  WebpackContext,
 } from './types';
 import { debugConfig, withCoreOptions } from './util';
 
-export function createCracoPlugin<Options extends CoreOptions = CoreOptions>({
-  name = 'Plugin',
+const prefix = (pre: string | undefined, message: string) => (pre ? `${pre}: ${message}` : message).trim();
+
+export function createCracoPlugin<Options extends AnyRecord = AnyRecord>({
+  name,
   getOptions,
   craco = [],
   webpack = [],
@@ -24,43 +25,43 @@ export function createCracoPlugin<Options extends CoreOptions = CoreOptions>({
   jest = [],
 }: RequireAtLeastOne<
   {
-    name: string;
-    getOptions: <O extends CoreOptions>(options: O, context: Context) => Options;
-    craco?: ComposeFn<ReturnType<CracoPluginHook<'cracoConfig', Options>>, [Options, CracoContext]>[];
-    webpack?: ComposeFn<ReturnType<CracoPluginHook<'webpackConfig', Options>>, [Options, WebpackContext]>[];
-    devServer?: ComposeFn<ReturnType<CracoPluginHook<'devServerConfig', Options>>, [Options, DevServerContext]>[];
-    jest?: ComposeFn<ReturnType<CracoPluginHook<'jestConfig', Options>>, [Options, JestContext]>[];
+    name?: string;
+    getOptions: <C>(options: Partial<Options>, context: C) => Options;
+    craco?: ConfigFn<'cracoConfig', Options>[];
+    webpack?: ConfigFn<'webpackConfig', Options>[];
+    devServer?: ConfigFn<'devServerConfig', Options>[];
+    jest?: ConfigFn<'jestConfig', Options>[];
   },
   'craco' | 'webpack' | 'devServer' | 'jest'
 >): CracoPlugin<Options> {
-  const createHook = <ConfigKey extends keyof ConfigObjects, C extends Context>(
-    configKey: ConfigKey,
-    functions: ComposeFn<ReturnType<CracoPluginHook<typeof configKey, Options>>, [Options, C]>[],
-  ): CracoPluginHook<typeof configKey, Options, C> => {
+  const createHook = <K extends ConfigKey>(
+    configKey: K,
+    functions: ConfigFn<K, Options>[],
+  ): CracoPluginHook<typeof configKey, Options> => {
     if (! functions.length) {
-      log(`${name}: createHook(${configKey}): no functions specified.`);
+      log(prefix(name, `createHook(${configKey}): no functions specified.`));
 
-      return parameters => parameters[ configKey ];
+      return ({ [ configKey ]: config }) => config as HookConfig[typeof configKey];
     }
 
-    return ({ pluginOptions, context, [ configKey ]: config }) => {
-      const options = getOptions(withCoreOptions(pluginOptions), context);
+    return ({ [ configKey ]: config, cracoConfig, pluginOptions, context }) => {
+      const options = withCoreOptions(getOptions(pluginOptions, context));
 
       if (! options.enabled) {
-        log(`${name}: not enabled. Not configuring ${configKey}.`);
+        log(prefix(name, `Configuring ${configKey} not enabled.`));
 
-        return config;
+        return config as HookConfig[typeof configKey];
       }
 
-      log(`${name} env: ${context.env}`);
+      log(prefix(name, `env: ${context.env}`));
 
-      const configure = compose<ConfigObjects[ConfigKey], [Options, C]>(
+      const configure = compose<HookConfig[K], [typeof options, HookContext[K], CracoConfig]>(
         debugConfig(`Before: ${configKey}`),
         ...functions,
         debugConfig(`After: ${configKey}`),
       );
 
-      return configure(config, options, context);
+      return configure(config as HookConfig[typeof configKey], options, context, cracoConfig);
     };
   };
 

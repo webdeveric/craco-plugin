@@ -12,7 +12,11 @@ npm install @webdeveric/craco-plugin --save
 const { createCracoPlugin } = require('@webdeveric/craco-plugin');
 
 const myCracoPlugin = createCracoPlugin({
+  // Used in verbose logging.
   name: 'My Plugin',
+  /**
+   * Provide default values for all of your options.
+   */
   getOptions(options, context) {
     return {
       // Default option values go here.
@@ -28,18 +32,24 @@ const myCracoPlugin = createCracoPlugin({
    * The return value of this function will be the `config` parameter for
    * the next function in this array. If you don't return a value, this
    * `config` object will be used for the next function's `config` parameter.
+   *
+   * Each function can take 4 parameters
+   *  - config (one of: cracoConfig, webpackConfig, devServerConfig, jestConfig)
+   *  - pluginOptions
+   *  - context
+   *  - cracoConfig
    */
   craco = [
-    (cracoConfig, pluginOptions, context) => cracoConfig,
+    (config, pluginOptions, context, cracoConfig) => config,
   ],
   webpack = [
-    (webpackConfig, pluginOptions, context) => webpackConfig,
+    (webpackConfig, pluginOptions, context, cracoConfig) => webpackConfig,
   ],
   devServer = [
-    (devServerConfig, pluginOptions, context) => devServerConfig,
+    (devServerConfig, pluginOptions, context, cracoConfig) => devServerConfig,
   ],
   jest = [
-    (jestConfig, pluginOptions, context) => jestConfig,
+    (jestConfig, pluginOptions, context, cracoConfig) => jestConfig,
   ],
 });
 ```
