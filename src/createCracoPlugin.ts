@@ -5,6 +5,7 @@ import type {
   AnyRecord,
   ConfigFn,
   ConfigKey,
+  Context,
   CracoConfig,
   CracoPlugin,
   CracoPluginHook,
@@ -26,7 +27,7 @@ export function createCracoPlugin<Options extends AnyRecord = AnyRecord>({
 }: RequireAtLeastOne<
   {
     name?: string;
-    getOptions: <C>(options: Partial<Options>, context: C) => Options;
+    getOptions: <C extends Context>(options: Partial<Options>, context: C) => Options;
     craco?: ConfigFn<'cracoConfig', Options>[];
     webpack?: ConfigFn<'webpackConfig', Options>[];
     devServer?: ConfigFn<'devServerConfig', Options>[];
