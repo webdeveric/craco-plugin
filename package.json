@@ -53,7 +53,7 @@
     "@craco/craco": "^6.0.0"
   },
   "dependencies": {
-    "@types/node": "^15.3.0",
+    "@types/node": "^15.3.1",
     "@types/webpack": "^4.0.0",
     "@types/webpack-dev-server": "^3.11.4",
     "@webdeveric/utils": "^0.7.0"
