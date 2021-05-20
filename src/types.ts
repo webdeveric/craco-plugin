@@ -161,4 +161,5 @@ export type CracoPlugin<Options extends AnyRecord = AnyRecord> = {
   overrideWebpackConfig?: CracoPluginHook<'webpackConfig', Options>;
   overrideDevServerConfig?: CracoPluginHook<'devServerConfig', Options>;
   overrideJestConfig?: CracoPluginHook<'jestConfig', Options>;
+  readonly [Symbol.toStringTag]?: string;
 };

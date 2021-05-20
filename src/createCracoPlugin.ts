@@ -19,7 +19,7 @@ const prefix = (pre: string | undefined, message: string) => (pre ? `${pre}: ${m
 
 export function createCracoPlugin<Options extends AnyRecord = AnyRecord>({
   name,
-  getOptions,
+  getOptions = options => options as Options,
   craco = [],
   webpack = [],
   devServer = [],
@@ -27,7 +27,7 @@ export function createCracoPlugin<Options extends AnyRecord = AnyRecord>({
 }: RequireAtLeastOne<
   {
     name?: string;
-    getOptions: <C extends Context>(options: Partial<Options>, context: C) => Options;
+    getOptions?: <C extends Context>(options: Partial<Options>, context: C) => Options;
     craco?: ConfigFn<'cracoConfig', Options>[];
     webpack?: ConfigFn<'webpackConfig', Options>[];
     devServer?: ConfigFn<'devServerConfig', Options>[];
@@ -57,9 +57,9 @@ export function createCracoPlugin<Options extends AnyRecord = AnyRecord>({
       log(prefix(name, `env: ${context.env}`));
 
       const configure = compose<HookConfig[K], [typeof options, HookContext[K], CracoConfig]>(
-        debugConfig(`Before: ${configKey}`),
+        debugConfig(prefix(name, `before ${configKey}`)),
         ...functions,
-        debugConfig(`After: ${configKey}`),
+        debugConfig(prefix(name, `after ${configKey}`)),
       );
 
       return configure(config as HookConfig[typeof configKey], options, context, cracoConfig);
@@ -71,5 +71,8 @@ export function createCracoPlugin<Options extends AnyRecord = AnyRecord>({
     overrideWebpackConfig: createHook('webpackConfig', webpack),
     overrideDevServerConfig: createHook('devServerConfig', devServer),
     overrideJestConfig: createHook('jestConfig', jest),
+    get [ Symbol.toStringTag ]() {
+      return 'CracoPlugin';
+    },
   };
 }
