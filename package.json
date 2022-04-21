@@ -1,6 +1,6 @@
 {
   "name": "@webdeveric/craco-plugin",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Create your own CRACO plugins",
   "license": "MIT",
   "publishConfig": {
