@@ -58,7 +58,7 @@
     "@types/node": "^17.0.10",
     "@types/webpack": "^4.0.0",
     "@types/webpack-dev-server": "^3.11.4",
-    "@webdeveric/utils": "^0.13.0"
+    "@webdeveric/utils": "^0.14.0"
   },
   "devDependencies": {
     "@webdeveric/eslint-config-ts": "^0.4.1",
