@@ -15,7 +15,7 @@ import type {
 } from './types';
 import { debugConfig, withCoreOptions } from './util';
 
-const prefix = (pre: string | undefined, message: string) => (pre ? `${pre}: ${message}` : message).trim();
+const prefix = (pre: string | undefined, message: string): string => (pre ? `${pre}: ${message}` : message).trim();
 
 export function createCracoPlugin<Options extends AnyRecord = AnyRecord>({
   name,
