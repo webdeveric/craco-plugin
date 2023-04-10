@@ -1,6 +1,6 @@
-import type { Plugin, Configuration as WebpackConfig } from 'webpack';
-import type { ComposeFn } from '@webdeveric/utils';
+import type { AnyNewable, ComposeFn } from '@webdeveric/utils';
 import type { Configuration as DevServerConfig } from 'webpack-dev-server';
+import type { Configuration as WebpackConfig } from 'webpack';
 
 export type { DevServerConfig, WebpackConfig };
 
@@ -8,13 +8,6 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> = Pick<T, Exclu
   {
     [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>;
   }[Keys];
-
-export type WebpackPlugin = {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  new (...args: any[]): any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  [property: string]: any;
-} & Plugin;
 
 export type ImportMap = {
   imports: Record<string, string>;
@@ -91,7 +84,7 @@ export type CracoConfig = {
   webpack?: {
     alias?: AnyRecord;
     plugins?: {
-      add?: WebpackPlugin[];
+      add?: AnyNewable[];
       remove?: string[];
     };
     configure?: ConfigOptions<WebpackConfig>;

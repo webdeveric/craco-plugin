@@ -1,5 +1,5 @@
 import { compose } from '@webdeveric/utils';
-import { log } from '@craco/craco/lib/logger';
+import { log } from '@craco/craco/dist/lib/logger';
 
 import type {
   AnyRecord,
