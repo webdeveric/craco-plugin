@@ -62,23 +62,24 @@
     "./*.{json,md}": "prettier --write"
   },
   "peerDependencies": {
-    "@craco/craco": "^6.0.0"
+    "@craco/craco": "^7.1.0"
   },
   "dependencies": {
-    "@types/node": "^18.0.0",
-    "@types/webpack": "^4.0.0",
-    "@types/webpack-dev-server": "^3.11.4",
-    "@webdeveric/utils": "^0.16.0"
+    "@craco/types": "^7.1.0",
+    "@types/node": "^18.15.11",
+    "@types/webpack-dev-server": "^4.7.2",
+    "@types/webpack": "^5.28.1",
+    "@webdeveric/utils": "^0.26.3"
   },
   "devDependencies": {
-    "@webdeveric/eslint-config-ts": "^0.5.2",
+    "@webdeveric/eslint-config-ts": "^0.6.0",
     "@webdeveric/prettier-config": "^0.2.0",
-    "cspell": "^6.1.2",
-    "eslint": "^8.13.0",
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.2",
-    "prettier": "^2.3.0",
-    "rimraf": "^3.0.2",
-    "typescript": "^4.5.5"
+    "cspell": "^6.31.1",
+    "eslint": "^8.38.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.1",
+    "prettier": "^2.8.7",
+    "rimraf": "^5.0.0",
+    "typescript": "^4.9.5"
   }
 }
